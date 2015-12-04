@@ -9,9 +9,17 @@ working directory.
 
 ##Usage
 
-gitprint expects 1 argument. That argument can either be the github URL of the
-file you wish to convert and download, or the name of the file that is local on
-your machine (currently, this file must be in the current working directory).
+gitprint expects 1 argument, but there is an optional second:
+  1. Can either be the github URL of the file you wish to convert and download,
+or the name of the file that is local on your machine (currently, this file must
+be in the current working directory).
+  2. Can be a specified branch. For example, if you want a file from a branch
+that you called "branch2", then specify "branch2" as the second argument
+(This only works for when you specify a filename, not a URL. This is because the
+branch name is already in the URL).
+
+If a second argument is not provided when using the filename and no URL, then it
+defaults to whatever branch you currently have checked out.
 
 This script also cannot download a converted file from a private repo. This is
 because gitprint does not support this at this time.
@@ -27,10 +35,6 @@ $ ./gitprint https://github.com/username/repo/blob/branch/filename.md
 $ ls
 filename.pdf
 ```
-
-NOTE: at this time, if you just use the filename as below, the script assumes
-you want it from the master branch. There is not currently a way to specify
-otherwise unless you give the full URL as above.
 
 NOTE: Currently, the file being asked for must be in the root folder of the
 repo. As of now, if it is nested in subdirectories, you must use the above
@@ -48,3 +52,13 @@ $ ls
 filename.md  filename.pdf
 ```
 
+Below, I have specified to use the version in the issue#1 branch.
+
+```bash
+$ ls
+filename.md
+$ ./gitprint filename.md issue#1
+
+$ ls
+filename.md  filename.pdf
+```
