@@ -1,6 +1,6 @@
 #gitprint-download
 
-Thanks to @adamburmister for [gitprint](https://github.com/adamburmister/gitprint.com)
+Thanks to [@adamburmister](https://github.com/adamburmister) for [gitprint](https://github.com/adamburmister/gitprint.com)
 which is what this script uses.
 
 gitprint-download is a bash script that will use gitprint to convert a chosen
