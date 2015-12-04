@@ -29,7 +29,11 @@ branch name is already in the URL).
 If a second argument is not provided when using the filename and no URL, then it
 defaults to whatever branch you currently have checked out.
 
-This script also cannot download a converted file from a private repo. This is
+Full file paths can be used. You do not need to be in the same location as the
+file you are downloading. The pdf file however will be in the same directory as
+the source file.
+
+This script cannot download a converted file from a private repo. This is
 because gitprint does not support this at this time.
 
 ###Examples

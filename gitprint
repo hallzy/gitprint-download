@@ -19,9 +19,8 @@ downloadFile () {
   url="${url}?download"
   wget $url
 
-  # Get the name of the file. This is the name of the file that is given by
-  # default after downloading from wget, but removing "?download" from the end,
-  # and replacing it with ".pdf"
+  # Find the file in the cwd that contains "?download". This is appended to the
+  # filename after being downloaded
   pdf=$(find . -maxdepth 1 -name "*?download" -print)
 
   # remove extensions. These are the 3 extensions supported by gitprint, so I
@@ -30,11 +29,12 @@ downloadFile () {
   newpdf=${newpdf/.markdown/}
   newpdf=${newpdf/.md/}
 
+  # Remove "?download" from the filename, and add .pdf
   newpdf=${newpdf/?download/.pdf}
 
   mv $pdf $newpdf
   if [ $? -eq 0 ]; then
-    echo "The file is in the current directory as \"$newpdf\""
+    echo "The file is in \"$(pwd)\" as \"$newpdf\""
   else
     echo "failed"
   fi
@@ -54,10 +54,13 @@ urlScript () {
 
 #filenameScript() - uses the input and the url in the git config file to download the gitprint version#{{{
 filenameScript () {
-  filename=$1
+  file=$1
   branch=$2
 
-  filename=${filename/.\//}
+  # Separate filepath from file name
+  filename=$(basename $file)
+  filepath=${file/$filename/}
+  cd $filepath
   # if a # is in the branch name, change it to %23. This is the code used in a
   # URL for a #.
   branch=${branch/\#/%23}
