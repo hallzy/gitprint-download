@@ -46,6 +46,9 @@ urlScript () {
 filenameScript () {
   filename=$1
   branch=$2
+
+  # if a # is in the branch name, change it to %23. This is the code used in a
+  # URL for a #.
   branch=${branch/\#/%23}
   # This is the url you use to clone a repo, so it needs to be changed in order
   # to be used properly.
