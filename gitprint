@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#https://gitprint.com/hallzy/test/blob/master/report-assignment4and5.md?download
+#url = https://github.com/hallzy/test.git
+
+URL=$1
+
+URL=${URL/github.com/gitprint.com}
+
+gitprintURL="${URL}?download"
+
+wget $gitprintURL
+
+filename=$(find . -maxdepth 1 -name "*?download" -print)
+newfilename=${filename/?download/.pdf}
+
+mv $filename $newfilename
