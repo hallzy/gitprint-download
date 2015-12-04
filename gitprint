@@ -23,12 +23,22 @@ downloadFile () {
   # default after downloading from wget, but removing "?download" from the end,
   # and replacing it with ".pdf"
   pdf=$(find . -maxdepth 1 -name "*?download" -print)
-  newpdf=${pdf/.md/}
+
+  # remove extensions. These are the 3 extensions supported by gitprint, so I
+  # will too
+  newpdf=${pdf/.mdown/}
+  newpdf=${newpdf/.markdown/}
+  newpdf=${newpdf/.md/}
+
   newpdf=${newpdf/?download/.pdf}
 
   mv $pdf $newpdf
+  if [ $? -eq 0 ]; then
+    echo "The file is in the current directory as \"$newpdf\""
+  else
+    echo "failed"
+  fi
 
-  echo "The file is in the current directory as \"$newpdf\""
 }
 #}}}
 
@@ -47,6 +57,7 @@ filenameScript () {
   filename=$1
   branch=$2
 
+  filename=${filename/.\//}
   # if a # is in the branch name, change it to %23. This is the code used in a
   # URL for a #.
   branch=${branch/\#/%23}
