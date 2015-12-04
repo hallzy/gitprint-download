@@ -45,27 +45,55 @@ urlScript () {
 #filenameScript() - uses the input and the url in the git config file to download the gitprint version#{{{
 filenameScript () {
   filename=$1
+  branch=$2
+  branch=${branch/\#/%23}
   # This is the url you use to clone a repo, so it needs to be changed in order
   # to be used properly.
   url=$(git config --get remote.origin.url)
-  url=${url/.git/\/blob\/master\/$filename}
+  # Remove the .git at the end, and add ".git/blob/<branch>/<filename>"
+  url=${url/.git/\/blob\/$branch\/$filename}
+  # replace github with gitprint in the url
   url=${url/github.com/gitprint.com}
 
+  # For naming the file, change the # to a _. Bash does not like it otherwise
   echo "$url"
   downloadFile $url
 
 }
 #}}}
 
-# Start of the script
-isurl=$(isURL $1)
-if (( "$isurl" == "1" )); then
-  echo "Input is a URL"
-  urlScript $1
-elif (( $"isurl" == "0" )); then
-  echo "input is a filename"
-  filenameScript $1
+# Start of the script#{{{
+# If argument 1 is missing, do not execute
+if [[ -z $1 ]]; then
+  echo "Missing argument 1:"
+  echo "Expected a filename, or URL"
 else
-  echo "Error: Could not determine of the input was a filename or a URL."
+  isurl=$(isURL $1)
+  # if the input is a URL
+  if (( "$isurl" == "1" )); then
+    echo "Input is a URL"
+    # If there is an argument 2, state that it is being ignored, and continue.
+    # We use the branch stated in the URL.
+    if [[ $2 ]]; then
+      echo "We do not use argument two for URLs because the URL states the branch"
+      echo "Ignoring argument 2"
+    fi
+    urlScript $1
+  # if the input is not a URL, asssume it is a filename
+  elif (( $"isurl" == "0" )); then
+    echo "input is a filename"
+    if [[ $2 ]]; then
+      echo "Argument 2 was specified"
+      echo "Branch to use: $2"
+      branch=$2
+    else
+      branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+      echo "Using the current working branch: $branch"
+    fi
+    filenameScript $1 $branch
+  else
+    echo "Error: Could not determine of the input was a filename or a URL."
+  fi
 fi
+#}}}
 
