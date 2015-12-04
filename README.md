@@ -36,10 +36,6 @@ $ ls
 filename.pdf
 ```
 
-NOTE: Currently, the file being asked for must be in the root folder of the
-repo. As of now, if it is nested in subdirectories, you must use the above
-method.
-
 NOTE: This does not use the current version on your local system. It uses the
 current version that has been pushed to github
 
