@@ -1,17 +1,71 @@
 #!/bin/bash
 
-#https://gitprint.com/hallzy/test/blob/master/report-assignment4and5.md?download
-#url = https://github.com/hallzy/test.git
+#isURL() - Checks if the input is a url or not#{{{
+isURL () {
+  regex='https://github.com/[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+  string=$1
+  if [[ $string =~ $regex ]]; then
+    echo "1"
+  else
+    echo "0"
+  fi
+}
+#}}}
 
-URL=$1
+#downloadFile() - Downloads the pdf file from gitprint#{{{
+downloadFile () {
+  url=$1
 
-URL=${URL/github.com/gitprint.com}
+  url="${url}?download"
+  wget $url
 
-gitprintURL="${URL}?download"
+  # Get the name of the file. This is the name of the file that is given by
+  # default after downloading from wget, but removing "?download" from the end,
+  # and replacing it with ".pdf"
+  pdf=$(find . -maxdepth 1 -name "*?download" -print)
+  newpdf=${pdf/.md/}
+  newpdf=${newpdf/?download/.pdf}
 
-wget $gitprintURL
+  mv $pdf $newpdf
 
-filename=$(find . -maxdepth 1 -name "*?download" -print)
-newfilename=${filename/?download/.pdf}
+  echo "The file is in the current directory as \"$newpdf\""
+}
+#}}}
 
-mv $filename $newfilename
+# urlScript() - uses the input the download the gitprint version of the file#{{{
+urlScript () {
+  url=$1
+  url=${url/github.com/gitprint.com}
+
+  downloadFile $url
+
+}
+#}}}
+
+#filenameScript() - uses the input and the url in the git config file to download the gitprint version#{{{
+filenameScript () {
+  filename=$1
+  # This is the url you use to clone a repo, so it needs to be changed in order
+  # to be used properly.
+  url=$(git config --get remote.origin.url)
+  url=${url/.git/\/blob\/master\/$filename}
+  url=${url/github.com/gitprint.com}
+
+  echo "$url"
+  downloadFile $url
+
+}
+#}}}
+
+# Start of the script
+isurl=$(isURL $1)
+if (( "$isurl" == "1" )); then
+  echo "Input is a URL"
+  urlScript $1
+elif (( $"isurl" == "0" )); then
+  echo "input is a filename"
+  filenameScript $1
+else
+  echo "Error: Could not determine of the input was a filename or a URL."
+fi
+
