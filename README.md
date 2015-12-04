@@ -3,6 +3,14 @@
 Thanks to [@adamburmister](https://github.com/adamburmister) for [gitprint](https://github.com/adamburmister/gitprint.com)
 which is what this script uses.
 
+Note that gitprint supports the following three markdown file extensions, so
+this does as well:
+  * md
+  * mdown
+  * markdown
+
+Nothing else will work.
+
 gitprint-download is a bash script that will use gitprint to convert a chosen
 markdown file, and then download that converted pdf document to the current
 working directory.
@@ -48,6 +56,23 @@ $ ls
 filename.md  filename.pdf
 ```
 
+Subdirectories also work:
+
+```bash
+$ ls
+testdir
+$ ls testdir
+filename.md
+$ ./gitprint testdir/filename.md
+
+$ ls
+testdir  filename.pdf
+$ rm -rf filename.pdf
+$ ./gitprint ./testdir/filename.md
+
+$ ls
+testdir  filename.pdf
+```
 Below, I have specified to use the version in the issue#1 branch.
 
 ```bash
