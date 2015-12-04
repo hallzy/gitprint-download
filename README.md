@@ -32,6 +32,13 @@ NOTE: at this time, if you just use the filename as below, the script assumes
 you want it from the master branch. There is not currently a way to specify
 otherwise unless you give the full URL as above.
 
+NOTE: Currently, the file being asked for must be in the root folder of the
+repo. As of now, if it is nested in subdirectories, you must use the above
+method.
+
+NOTE: This does not use the current version on your local system. It uses the
+current version that has been pushed to github
+
 ```bash
 $ ls
 filename.md
@@ -40,3 +47,4 @@ $ ./gitprint filename.md
 $ ls
 filename.md  filename.pdf
 ```
+
