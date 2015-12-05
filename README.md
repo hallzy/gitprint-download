@@ -19,8 +19,7 @@ working directory.
 
 gitprint expects 1 argument, but there is an optional second:
   1. Can either be the github URL of the file you wish to convert and download,
-or the name of the file that is local on your machine (currently, this file must
-be in the current working directory).
+or the name of the file that is local on your machine.
   2. Can be a specified branch. For example, if you want a file from a branch
 that you called "branch2", then specify "branch2" as the second argument
 (This only works for when you specify a filename, not a URL. This is because the
