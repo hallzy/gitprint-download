@@ -15,13 +15,16 @@ isURL () {
 #downloadFile() - Downloads the pdf file from gitprint#{{{
 downloadFile () {
   url=$1
+  destDir=$2
 
   url="${url}?download"
   wget $url
 
   # Find the file in the cwd that contains "?download". This is appended to the
   # filename after being downloaded
-  pdf=$(find . -maxdepth 1 -name "*?download" -print)
+  pdf=$(find . -maxdepth 1 -name "*\?download" -print)
+
+  echo "pdf: $pdf"
 
   # remove extensions. These are the 3 extensions supported by gitprint, so I
   # will too
@@ -32,12 +35,30 @@ downloadFile () {
   # Remove "?download" from the filename, and add .pdf
   newpdf=${newpdf/?download/.pdf}
 
+  # Rename the file to get rid of ?download and the md extensions
   mv $pdf $newpdf
   if [ $? -eq 0 ]; then
+    # If the rename passed, display the current name and location
     echo "The file is in \"$(pwd)\" as \"$newpdf\""
+    # Move the file to destDir
+    if [[ $(pwd) != $destDir ]]; then
+      mv $newpdf $destDir
+      if [ $? -eq 0 ]; then
+        # If that move passes, display the new location
+        echo "The file is now in \"$destDir\" as \"$newpdf\""
+      else
+        # Otherwise, state that the file did not move and is still in the other
+        # place
+        echo "failed move to destination Directory"
+        echo "The file is still in \"$(pwd)\" as \"$newpdf\""
+      fi
+    fi
   else
-    echo "failed"
+    # If the rename failed, state that, and the location and name of the file
+    echo "failed rename"
+    echo "The file is still in \"$(pwd)\" as \"$pdf\""
   fi
+
 
 }
 #}}}
@@ -45,9 +66,12 @@ downloadFile () {
 # urlScript() - uses the input the download the gitprint version of the file#{{{
 urlScript () {
   url=$1
+  destDir=$2
   url=${url/github.com/gitprint.com}
+  # REplace # with %23 which is the URL code for #
+  url=${url/\#/%23}
 
-  downloadFile $url
+  downloadFile $url $destDir
 
 }
 #}}}
@@ -56,11 +80,30 @@ urlScript () {
 filenameScript () {
   file=$1
   branch=$2
+  destDir=$3
+
+  echo "file: $file"
+  echo "branch: $branch"
+  echo "destDir: $destDir"
 
   # Separate filepath from file name
   filename=$(basename $file)
   filepath=${file/$filename/}
+
+  # If filepath is empty, it is in the current directory
+  if [[ -z $filepath ]]; then
+    filepath="./"
+  fi
+
   cd $filepath
+
+  echo "File Name: $filename"
+  echo "File Path: $filepath"
+
+  # if branch is empty, make it the current checked out branch
+  if [[ "$branch" == "ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch" ]]; then
+    branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+  fi
   # if a # is in the branch name, change it to %23. This is the code used in a
   # URL for a #.
   branch=${branch/\#/%23}
@@ -74,43 +117,79 @@ filenameScript () {
 
   # For naming the file, change the # to a _. Bash does not like it otherwise
   echo "$url"
-  downloadFile $url
+  downloadFile $url $destDir
 
 }
 #}}}
 
 # Start of the script#{{{
-# If argument 1 is missing, do not execute
+
+badArgs="false"
+
+# Initialize branch as empty
+branch="ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch"
+
+# Initialize the destDir as the current working directory
+destDir=$(pwd)
+
+# If argument 1 is missing, do not execute. This is the file or URL and we need this
+# Set badArgs to true of missing
 if [[ -z $1 ]]; then
+  badArgs="true"
   echo "Missing argument 1:"
   echo "Expected a filename, or URL"
-else
+fi
+
+# If arg 2 exists, find out what it is. If it is not a flag identifier set
+# badArgs to true
+if [[ $2 ]]; then
+  echo "Argument 2: $2 $3"
+  if [[ "$2" == "--dest-dir" ]]; then
+    destDir=$3
+  elif [[ "$2" == "--branch" ]]; then
+    branch=$3
+  else
+    badArgs="true"
+    echo "Argument 2 is not an identifiable flag"
+  fi
+fi
+
+# If arg 4 exists, find out what it is. If it is not a flag identifier set
+# badArgs to true
+if [[ $4 ]]; then
+  echo "Argument 3: $4 $5"
+  if [[ "$4" == "--dest-dir" ]]; then
+    destDir=$5
+  elif [[ "$4" == "--branch" ]]; then
+    branch=$5
+  else
+    badArgs="true"
+    echo "Argument 3 is not an identifiable flag"
+  fi
+fi
+
+# Get the absolute path of destDir
+cd $destDir
+destDir=$(pwd)
+cd -
+
+
+# If the script arguments cannot be read throw an error.
+if [[ "$badArgs" == "false" ]]; then
   isurl=$(isURL $1)
   # if the input is a URL
   if (( "$isurl" == "1" )); then
     echo "Input is a URL"
-    # If there is an argument 2, state that it is being ignored, and continue.
-    # We use the branch stated in the URL.
-    if [[ $2 ]]; then
-      echo "We do not use argument two for URLs because the URL states the branch"
-      echo "Ignoring argument 2"
-    fi
-    urlScript $1
+    urlScript $1 $destDir
   # if the input is not a URL, asssume it is a filename
   elif (( $"isurl" == "0" )); then
     echo "input is a filename"
-    if [[ $2 ]]; then
-      echo "Argument 2 was specified"
-      echo "Branch to use: $2"
-      branch=$2
-    else
-      branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-      echo "Using the current working branch: $branch"
-    fi
-    filenameScript $1 $branch
+    filenameScript $1 $branch $destDir
   else
     echo "Error: Could not determine of the input was a filename or a URL."
   fi
+else
+  echo "An error occured while parsing the arguments"
 fi
 #}}}
 

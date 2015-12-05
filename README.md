@@ -21,6 +21,8 @@ gitprint expects 1 mandatory argument which can either be the github URL of the
 file you wish to convert and download, or the name and/or path of the file that
 is local on your machine.
 
+
+
 Full file paths can be used for the filename. You do not need to be in the same
 location as the file you are downloading.
 
@@ -29,6 +31,38 @@ because gitprint does not support this at this time.
 
 NOTE: This does not use the current version on your local system. It uses the
 current version that has been pushed to github
+
+###Special URL Characters
+
+Note that the only way to ensure that a URL will work is to copy and paste the
+URL directly from a web browser of a public repo. If you edit a URL there is a
+possibility that it will not work.
+
+As an example, consider this URL:
+
+```
+https://github.com/username/repo/blob/master/filename.md
+```
+
+Now lets say that I want to get filename.md from a branch called issue#1. If I
+edit the URL directly to get this:
+
+```
+https://github.com/username/repo/blob/issue#1/filename.md
+```
+
+This would fail (okay, this specific example will work, but only for reasons
+that I am going to explain further down). If you were to go to this branch in a
+web browser, issue#1 would look like "issue%231". Notice that the "#" is
+replaced with a "%23".
+
+The above example will work because I have provided a fix for it in the code. I
+will add more exceptions as they are needed and requested, but just keep this in
+mind.
+
+Below are the special characters that are supported so far:
+  * # = %23
+
 
 ###Examples
 
