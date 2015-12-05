@@ -12,6 +12,18 @@ isURL () {
 }
 #}}}
 
+# urlCharacterReplacement() - Replaces special characters for use in a URL #{{{
+
+urlCharacterReplacement () {
+  input=$1
+
+  # # = %23
+  input=${input/\#/%23}
+
+  echo "$input"
+}
+#}}}
+
 #downloadFile() - Downloads the pdf file from gitprint#{{{
 downloadFile () {
   url=$1
@@ -68,8 +80,8 @@ urlScript () {
   url=$1
   destDir=$2
   url=${url/github.com/gitprint.com}
-  # REplace # with %23 which is the URL code for #
-  url=${url/\#/%23}
+  # Replace special URL characters
+  url=$(urlCharacterReplacement $url)
 
   downloadFile $url $destDir
 
@@ -104,9 +116,9 @@ filenameScript () {
   if [[ "$branch" == "ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch" ]]; then
     branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
   fi
-  # if a # is in the branch name, change it to %23. This is the code used in a
-  # URL for a #.
-  branch=${branch/\#/%23}
+  # Replace special URL characters
+  branch=$(urlCharacterReplacement $branch)
+
   # This is the url you use to clone a repo, so it needs to be changed in order
   # to be used properly.
   url=$(git config --get remote.origin.url)
@@ -124,6 +136,8 @@ filenameScript () {
 
 # Start of the script#{{{
 
+# Initializations#{{{
+
 badArgs="false"
 
 # Initialize branch as empty
@@ -131,6 +145,11 @@ branch="ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch"
 
 # Initialize the destDir as the current working directory
 destDir=$(pwd)
+#}}}
+
+# Check Arguments#{{{
+
+# Check Argument 1#{{{
 
 # If argument 1 is missing, do not execute. This is the file or URL and we need this
 # Set badArgs to true of missing
@@ -139,6 +158,9 @@ if [[ -z $1 ]]; then
   echo "Missing argument 1:"
   echo "Expected a filename, or URL"
 fi
+#}}}
+
+# Check Argument 2#{{{
 
 # If arg 2 exists, find out what it is. If it is not a flag identifier set
 # badArgs to true
@@ -153,6 +175,9 @@ if [[ $2 ]]; then
     echo "Argument 2 is not an identifiable flag"
   fi
 fi
+#}}}
+
+# Check Argument 3#{{{
 
 # If arg 4 exists, find out what it is. If it is not a flag identifier set
 # badArgs to true
@@ -167,12 +192,17 @@ if [[ $4 ]]; then
     echo "Argument 3 is not an identifiable flag"
   fi
 fi
+#}}}
+#}}}
 
-# Get the absolute path of destDir
+# Get the absolute path of destDir#{{{
+
 cd $destDir
 destDir=$(pwd)
 cd -
+#}}}
 
+# Main#{{{
 
 # If the script arguments cannot be read throw an error.
 if [[ "$badArgs" == "false" ]]; then
@@ -191,5 +221,7 @@ if [[ "$badArgs" == "false" ]]; then
 else
   echo "An error occured while parsing the arguments"
 fi
+#}}}
+
 #}}}
 
