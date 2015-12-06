@@ -206,7 +206,7 @@ cd - > /dev/null
 # Main#{{{
 
 if [[ "$showVersion" == "true" ]]; then
-  echo "Version 0.0.0"
+  echo "Version v1.0.0"
 else
   # If the script arguments cannot be read throw an error.
   if [[ "$badArgs" == "false" ]]; then
