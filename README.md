@@ -15,13 +15,29 @@ gitprint-download is a bash script that will use gitprint to convert a chosen
 markdown file, and then download that converted pdf document to the current
 working directory.
 
+##Install
+
+There is an install script. If you execute it, it will just copy the gitprint
+file to the /bin directory. If you execute:
+
+```bash
+$ ./install --symlink
+```
+
+It will create a symlink in /bin that links to this repo.
+
 ##Usage
+
+Executing gitprint with no arguments shows the version number.
+
+```bash
+$ gitprint
+Version 1.2.3
+```
 
 gitprint expects 1 mandatory argument which can either be the github URL of the
 file you wish to convert and download, or the name and/or path of the file that
 is local on your machine.
-
-
 
 Full file paths can be used for the filename. You do not need to be in the same
 location as the file you are downloading.

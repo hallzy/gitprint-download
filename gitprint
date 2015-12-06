@@ -139,6 +139,7 @@ filenameScript () {
 # Initializations#{{{
 
 badArgs="false"
+showVersion="false"
 
 # Initialize branch as empty
 branch="ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch"
@@ -152,11 +153,9 @@ destDir=$(pwd)
 # Check Argument 1#{{{
 
 # If argument 1 is missing, do not execute. This is the file or URL and we need this
-# Set badArgs to true of missing
+# Set badArgs to true if missing. We can use this also to get the version number
 if [[ -z $1 ]]; then
-  badArgs="true"
-  echo "Missing argument 1:"
-  echo "Expected a filename, or URL"
+  showVersion="true"
 fi
 #}}}
 
@@ -199,28 +198,35 @@ fi
 
 cd $destDir
 destDir=$(pwd)
-cd -
+# Direct to /dev/null because I do not want to see the output of this.
+cd - > /dev/null
+
 #}}}
 
 # Main#{{{
 
-# If the script arguments cannot be read throw an error.
-if [[ "$badArgs" == "false" ]]; then
-  isurl=$(isURL $1)
-  # if the input is a URL
-  if (( "$isurl" == "1" )); then
-    echo "Input is a URL"
-    urlScript $1 $destDir
-  # if the input is not a URL, asssume it is a filename
-  elif (( $"isurl" == "0" )); then
-    echo "input is a filename"
-    filenameScript $1 $branch $destDir
-  else
-    echo "Error: Could not determine of the input was a filename or a URL."
-  fi
+if [[ "$showVersion" == "true" ]]; then
+  echo "Version 0.0.0"
 else
-  echo "An error occured while parsing the arguments"
+  # If the script arguments cannot be read throw an error.
+  if [[ "$badArgs" == "false" ]]; then
+    isurl=$(isURL $1)
+    # if the input is a URL
+    if (( "$isurl" == "1" )); then
+      echo "Input is a URL"
+      urlScript $1 $destDir
+    # if the input is not a URL, asssume it is a filename
+    elif (( $"isurl" == "0" )); then
+      echo "input is a filename"
+      filenameScript $1 $branch $destDir
+    else
+      echo "Error: Could not determine of the input was a filename or a URL."
+    fi
+  else
+    echo "An error occured while parsing the arguments"
+  fi
 fi
+
 #}}}
 
 #}}}
