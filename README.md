@@ -15,6 +15,20 @@ gitprint-download is a bash script that will use gitprint to convert a chosen
 markdown file, and then download that converted pdf document to the current
 working directory.
 
+##Contents
+
+  * [Install](https://github.com/hallzy/gitprint-download#install)
+  * [Usage](https://github.com/hallzy/gitprint-download#usage)
+    * [Special URL Characters](https://github.com/hallzy/gitprint-download#special-url-characters)
+      * [Currently Supported Characters](https://github.com/hallzy/gitprint-download#currently-supported-characters)
+    * [Examples](https://github.com/hallzy/gitprint-download#examples)
+      * [Basic URL Example](https://github.com/hallzy/gitprint-download#basic-url-example)
+      * [Basic Filename Example](https://github.com/hallzy/gitprint-download#basic-filename-example)
+      * [Subdirectory Example](https://github.com/hallzy/gitprint-download#subdirectory-example)
+    * [Optional Arguments](https://github.com/hallzy/gitprint-download#optional-arguments)
+      * [--dest-dir](https://github.com/hallzy/gitprint-download#--dest-dir)
+      * [--branch](https://github.com/hallzy/gitprint-download#--branch)
+
 ##Install
 
 There is an install script. If you execute it, it will just copy the gitprint
@@ -75,6 +89,8 @@ replaced with a "%23".
 The above example will work because I have provided a fix for it in the code. I
 will add more exceptions as they are needed and requested, but just keep this in
 mind.
+
+####Currently Supported Characters
 
 Below are the special characters that are supported so far:
   * # = %23
