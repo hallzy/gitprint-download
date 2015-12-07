@@ -1,13 +1,19 @@
 #!/bin/bash
 
 #isURL() - Checks if the input is a url or not#{{{
+# return 1 if $1 is a github url
+# return 0 if $1 is a URL but not github
+# return -1 if $1 is not an http URL
 isURL () {
-  regex='https://github.com/[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+  githubRegex='https://github.com/[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+  httpRegex='https://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
   string=$1
-  if [[ $string =~ $regex ]]; then
+  if [[ $string =~ $githubRegex ]]; then
     echo "1"
-  else
+  elif [[ $string =~ $httpRegex ]]; then
     echo "0"
+  else
+    echo "-1"
   fi
 }
 #}}}
@@ -206,21 +212,23 @@ cd - > /dev/null
 # Main#{{{
 
 if [[ "$showVersion" == "true" ]]; then
-  echo "Version v1.0.0"
+  echo "Version v1.0.1"
 else
   # If the script arguments cannot be read throw an error.
   if [[ "$badArgs" == "false" ]]; then
     isurl=$(isURL $1)
     # if the input is a URL
     if (( "$isurl" == "1" )); then
-      echo "Input is a URL"
+      echo "Input is a github URL"
       urlScript $1 $destDir
     # if the input is not a URL, asssume it is a filename
-    elif (( $"isurl" == "0" )); then
+    elif (( "$isurl" == "-1" )); then
       echo "input is a filename"
       filenameScript $1 $branch $destDir
+    elif (( "$isurl" == "0" )); then
+      echo "Input is a URL, but not a github url. Gitprint only works with github URLs"
     else
-      echo "Error: Could not determine of the input was a filename or a URL."
+      echo "Error: Could not determine if the input was a filename or a URL."
     fi
   else
     echo "An error occured while parsing the arguments"
