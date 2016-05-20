@@ -1,4 +1,4 @@
-#gitprint-download
+# gitprint-download
 
 Thanks to [@adamburmister](https://github.com/adamburmister) for [gitprint](https://github.com/adamburmister/gitprint.com)
 which is what this script uses.
@@ -15,7 +15,7 @@ gitprint-download is a bash script that will use gitprint to convert a chosen
 markdown file, and then download that converted pdf document to the current
 working directory.
 
-##Contents
+## Contents
 
   * [Install](https://github.com/hallzy/gitprint-download#install)
   * [Usage](https://github.com/hallzy/gitprint-download#usage)
@@ -29,7 +29,7 @@ working directory.
       * [--dest-dir](https://github.com/hallzy/gitprint-download#--dest-dir)
       * [--branch](https://github.com/hallzy/gitprint-download#--branch)
 
-##Install
+## Install
 
 There is an install script. If you execute it, it will just copy the gitprint
 file to the /bin directory. If you execute:
@@ -40,7 +40,7 @@ $ ./install --symlink
 
 It will create a symlink in /bin that links to this repo.
 
-##Usage
+## Usage
 
 Executing gitprint with no arguments shows the version number.
 
@@ -62,7 +62,7 @@ because gitprint does not support this at this time.
 NOTE: This does not use the current version on your local system. It uses the
 current version that has been pushed to github
 
-###Special URL Characters
+### Special URL Characters
 
 Note that the only way to ensure that a URL will work is to copy and paste the
 URL directly from a web browser of a public repo. If you edit a URL there is a
@@ -90,15 +90,16 @@ The above example will work because I have provided a fix for it in the code. I
 will add more exceptions as they are needed and requested, but just keep this in
 mind.
 
-####Currently Supported Characters
+#### Currently Supported Characters
 
 Below are the special characters that are supported so far:
-  * # = %23
+
+  * \# = %23
 
 
-###Examples
+### Examples
 
-####Basic URL Example
+#### Basic URL Example
 
 ```bash
 $ ./gitprint https://github.com/username/repo/blob/branch/filename.md
@@ -107,7 +108,7 @@ $ ls
 filename.pdf
 ```
 
-####Basic Filename Example
+#### Basic Filename Example
 
 ```bash
 $ ls
@@ -118,7 +119,7 @@ $ ls
 filename.md  filename.pdf
 ```
 
-####Subdirectory Example
+#### Subdirectory Example
 
 Full filepaths also work.
 
@@ -138,9 +139,9 @@ $ ls
 testdir  filename.pdf
 ```
 
-###Optional Arguments
+### Optional Arguments
 
-####--dest-dir
+#### --dest-dir
 
 The default value of this flag is the location of the markdown file you are
 converting.
@@ -157,7 +158,7 @@ $ ./gitprint filename.md --dest-dir ~/Documents
 $ ./gitprint https://github.com/username/repo/blob/branch/filename.md --dest-dir ~/Documents
 ```
 
-####--branch
+#### --branch
 
 NOTE: This option can only be used with a filename, not a URL. If a URL is
 provided, this flag will be ignored (github URLs specify the branch to use).
@@ -172,6 +173,4 @@ version from you branch that you called "Branch2"
 ```bash
 $ ./gitprint filename.md --branch Branch2
 ```
-
-
 
