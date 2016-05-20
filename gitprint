@@ -115,7 +115,14 @@ filenameScript () {
 
   # If filepath is empty, it is in the current directory
   if [[ -z $filepath ]]; then
-    filepath="./"
+    first=$(git rev-parse --show-toplevel)/
+    second=$(pwd)
+    filepath="${second#"$first"}"/
+
+    # If filepath and first are the same, then the file is in the root directory
+    if [[ "$filepath" == "$first" ]]; then
+      filepath="<root>"
+    fi
   fi
 
   cd $filepath
@@ -130,7 +137,12 @@ filenameScript () {
   # to be used properly.
   url=$(git config --get remote.origin.url)
   # Remove the .git at the end, and add ".git/blob/<branch>/<filename>"
-  url=${url/.git/\/blob\/$branch\/$filename}
+  if [[ "$filepath" == "<root>" ]]; then
+    url=${url/.git/\/blob\/$branch\/$filename}
+  else
+    url=${url/.git/\/blob\/$branch\/$filepath$filename}
+  fi
+
   # replace github with gitprint in the url
   url=${url/github.com/gitprint.com}
 
