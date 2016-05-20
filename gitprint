@@ -159,6 +159,7 @@ filenameScript () {
 
 badArgs="false"
 showVersion="false"
+version="v1.0.2"
 
 # Initialize branch as empty
 branch="ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch"
@@ -225,7 +226,7 @@ cd - > /dev/null
 # Main#{{{
 
 if [[ "$showVersion" == "true" ]]; then
-  echo "Version v1.0.1"
+  echo "Version $version"
 else
   # If the script arguments cannot be read throw an error.
   if [[ "$badArgs" == "false" ]]; then
