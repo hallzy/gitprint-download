@@ -100,6 +100,11 @@ filenameScript () {
   branch=$2
   destDir=$3
 
+  # if branch is empty, make it the current checked out branch
+  if [[ "$branch" == "ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch" ]]; then
+    branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+  fi
+
   echo "file: $file"
   echo "branch: $branch"
   echo "destDir: $destDir"
@@ -118,10 +123,6 @@ filenameScript () {
   echo "File Name: $filename"
   echo "File Path: $filepath"
 
-  # if branch is empty, make it the current checked out branch
-  if [[ "$branch" == "ifIAmStillAssignedThisChangeMeToCurrentlyCheckedOutBranch" ]]; then
-    branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-  fi
   # Replace special URL characters
   branch=$(urlCharacterReplacement $branch)
 
