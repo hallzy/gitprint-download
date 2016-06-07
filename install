@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$1" == "--symlink" ]]; then
-  sudo ln -s $(pwd)/gitprint /bin/gitprint
+  sudo ln -s "$(pwd)"/gitprint /bin/gitprint
 else
   sudo cp gitprint /bin/
 fi

@@ -36,7 +36,7 @@ downloadFile () {
   destDir=$2
 
   url="${url}?download"
-  wget $url
+  wget "$url"
 
   # Find the file in the cwd that contains "?download". This is appended to the
   # filename after being downloaded
@@ -54,13 +54,13 @@ downloadFile () {
   newpdf=${newpdf/?download/.pdf}
 
   # Rename the file to get rid of ?download and the md extensions
-  mv $pdf $newpdf
+  mv "$pdf" "$newpdf"
   if [ $? -eq 0 ]; then
     # If the rename passed, display the current name and location
     echo "The file is in \"$(pwd)\" as \"$newpdf\""
     # Move the file to destDir
     if [[ $(pwd) != $destDir ]]; then
-      mv $newpdf $destDir
+      mv "$newpdf" "$destDir"
       if [ $? -eq 0 ]; then
         # If that move passes, display the new location
         echo "The file is now in \"$destDir\" as \"$newpdf\""
@@ -87,9 +87,9 @@ urlScript () {
   destDir=$2
   url=${url/github.com/gitprint.com}
   # Replace special URL characters
-  url=$(urlCharacterReplacement $url)
+  url=$(urlCharacterReplacement "$url")
 
-  downloadFile $url $destDir
+  downloadFile "$url" "$destDir"
 
 }
 #}}}
@@ -110,7 +110,7 @@ filenameScript () {
   echo "destDir: $destDir"
 
   # Separate filepath from file name
-  filename=$(basename $file)
+  filename=$(basename "$file")
   filepath=${file/$filename/}
 
   # If filepath is empty, it is in the current directory
@@ -131,7 +131,7 @@ filenameScript () {
   echo "File Path: $filepath"
 
   # Replace special URL characters
-  branch=$(urlCharacterReplacement $branch)
+  branch=$(urlCharacterReplacement "$branch")
 
   # This is the url you use to clone a repo, so it needs to be changed in order
   # to be used properly.
@@ -148,7 +148,7 @@ filenameScript () {
 
   # For naming the file, change the # to a _. Bash does not like it otherwise
   echo "$url"
-  downloadFile $url $destDir
+  downloadFile "$url" "$destDir"
 
 }
 #}}}
@@ -216,7 +216,7 @@ fi
 
 # Get the absolute path of destDir#{{{
 
-cd $destDir
+cd "$destDir"
 destDir=$(pwd)
 # Direct to /dev/null because I do not want to see the output of this.
 cd - > /dev/null
@@ -230,15 +230,15 @@ if [[ "$showVersion" == "true" ]]; then
 else
   # If the script arguments cannot be read throw an error.
   if [[ "$badArgs" == "false" ]]; then
-    isurl=$(isURL $1)
+    isurl=$(isURL "$1")
     # if the input is a URL
     if (( "$isurl" == "1" )); then
       echo "Input is a github URL"
-      urlScript $1 $destDir
+      urlScript "$1" "$destDir"
     # if the input is not a URL, asssume it is a filename
     elif (( "$isurl" == "-1" )); then
       echo "input is a filename"
-      filenameScript $1 $branch $destDir
+      filenameScript "$1" "$branch" "$destDir"
     elif (( "$isurl" == "0" )); then
       echo "Input is a URL, but not a github url. Gitprint only works with github URLs"
     else
